@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "expo-native-fonts-example",
+    "slug": "expo-native-fonts-example",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "expo.modules.nativefonts.example"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "expo.modules.nativefonts.example"
+    },
+    "plugins": [
+      [
+        "../app.plugin.js",
+        {
+          "srcFolder": "./fonts",
+          "fonts": [
+            {  "filePath": "Montserrat/Montserrat-Black.ttf", "targets": ["exponativefontsexample"],  "platform": "ios" },
+            {  "filePath": "Montserrat/Montserrat-BlackItalic.ttf", "targets": ["exponativefontsexample"],  "platform": "ios" },
+            {  "filePath": "Montserrat/Montserrat-Bold.ttf", "targets": ["exponativefontsexample"],  "platform": "ios" },
+            {  "filePath": "Montserrat/Montserrat-BoldItalic.ttf", "targets": ["exponativefontsexample"],  "platform": "ios" }
+          ]
+        }
+      ]
+    ],
+    "extra": {
+      "projectId": "198071ab-2ac3-4c30-b45a-d6f3ba4d7983"
+    }
+  }
+}
