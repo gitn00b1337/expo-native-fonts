@@ -12,7 +12,7 @@ To add fonts, simply create a folder and drop iOS compatible fonts (e.g. ttf fil
             {
                 "filePath": "Montserrat/Montserrat-Bold.ttf",
                 "targets": [
-                "expowidgetsWidgetExtension"
+                    "expowidgetsWidgetExtension"
                 ],
                 "platform": "ios"
             }
@@ -23,4 +23,4 @@ To add fonts, simply create a folder and drop iOS compatible fonts (e.g. ttf fil
 srcFolder should relative path from your project root to the fonts folder.
 fonts is an array of fonts to inject
 
-Each item of fonts must have the file path, the target it is to be injected into and the platform. Android is not yet supported.
+Each item of fonts must have the file path, the targets it is to be injected into and the platform. Android is not yet supported.
