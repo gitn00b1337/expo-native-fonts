@@ -2,6 +2,14 @@
 
 This module is for adding custom fonts to native iOS extensions, for example if you use my [expo widgets module](https://github.com/gitn00b1337/expo-widgets).
 
+## Installation
+
+```
+npx expo install @bittingz/expo-widgets
+```
+
+## Setup
+
 To add fonts, simply create a folder and drop iOS compatible fonts (e.g. ttf files) in there. Then add the following to your expo app.config.(ts/js) plugins array:
 
 ```
