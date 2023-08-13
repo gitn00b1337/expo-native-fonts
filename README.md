@@ -16,7 +16,7 @@ To add fonts, simply create a folder and drop iOS compatible fonts (e.g. ttf fil
                 ],
                 "platform": "ios"
             }
-            ]
+        ]
     }
 ```
 
