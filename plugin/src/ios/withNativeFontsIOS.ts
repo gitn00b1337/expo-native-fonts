@@ -116,14 +116,25 @@ const addFontToXcodeProj = (config: ExportedConfigWithProps<XcodeProject>, optio
 
     console.log(`Target UUID: ${targetUuid}`)
 
-    project.addBuildPhase(
-        [...fontFiles],
-        "PBXResourcesBuildPhase",
-        groupName,
-        targetUuid,
-        'app_extension',
-        ''
-    )
+    const resourceBuildPhases = project.pbxResourcesBuildPhaseObj(targetUuid)
+
+
+    // this causes multiple resource phases which can cause build issues
+    // project.addBuildPhase(
+    //     [...fontFiles],
+    //     "PBXResourcesBuildPhase",
+    //     groupName,
+    //     targetUuid,
+    //     'app_extension',
+    //     ''
+    // )
+    for (const file of fontFiles) {
+        project.addResourceFile(file, {
+            lastKnownFileType: 'file',
+            sourceTree: '<group>',
+            target: targetUuid,
+        }, 'Resources')
+    }
 
     return config
 }

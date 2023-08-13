@@ -1,0 +1,10 @@
+{
+    "platforms": ["ios", "android"],
+    "ios": {
+      "modules": ["ExpoNativeFontsModule"]
+    },
+    "android": {
+      "modules": ["expo.modules.nativefonts.ExpoNativeFontsModule"]
+    }
+  }
+  
