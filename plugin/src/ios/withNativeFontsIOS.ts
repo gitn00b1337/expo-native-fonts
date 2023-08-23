@@ -1,8 +1,6 @@
-import { ConfigPlugin, ExportedConfigWithProps, XcodeProject, withDangerousMod, withInfoPlist, withXcodeProject } from "@expo/config-plugins"
+import { ConfigPlugin, ExportedConfigWithProps, XcodeProject, withXcodeProject } from "@expo/config-plugins"
 import { ExpoNativeFontOptions, ExpoNativeFontsOptions } from ".."
 import * as path from "path"
-import { ExpoConfig } from "@expo/config-types"
-import { sanitizedName } from "@expo/config-plugins/build/ios/utils/Xcodeproj"
 import fsExtra from "fs-extra"
 
 const getIOSFonts = (options: ExpoNativeFontsOptions) => {
@@ -152,21 +150,39 @@ const updateInfoPlist = (config: ExportedConfigWithProps<XcodeProject>, options:
         console.log(`plistFilePath: ${plistFilePath}`)
 
         if (!fsExtra.existsSync(plistFilePath)) {
-            throw new Error(`There is no Info.plist file at ${plistFilePath}. You must ensure your target has a Info.plist file to add fonts.`)
+            const directory = path.dirname(plistFilePath)
+
+            if (!fsExtra.existsSync(directory)) {
+                fsExtra.mkdirSync(directory, { recursive: true })
+            }
+
+            fsExtra.writeFileSync(plistFilePath, `<?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+            <plist version="1.0">
+            <dict>
+            </dict>
+            </plist>
+            `)
+            //throw new Error(`There is no Info.plist file at ${plistFilePath}. You must ensure your target has a Info.plist file to add fonts.`)
         }
         
         const contents = fsExtra.readFileSync(plistFilePath, 'utf-8')
         const dictTag = '<dict>'
         const dictIndex = contents.indexOf(dictTag)
+        let insertIndex = dictIndex + dictTag.length
 
-        console.log(contents)
-        console.log(`dictIndex: ${dictIndex}`)
-        
         if (dictIndex === -1) {
-            throw new Error(`Your Info.plist file at ${plistFilePath} does not have a <dict>. Please add this to your file.`)
-        }
+            console.log(contents)
+            console.log(`dictIndex: ${dictIndex}`)
+            const plistEndIndex = contents.indexOf('</plist>')
 
-        const insertIndex = dictIndex + dictTag.length
+            if (plistEndIndex === -1) {
+                throw new Error(`Your Info.plist file at ${plistFilePath} does not have a <dict> or </plist> tag. Please add this to your file.`)
+            }
+            else {
+                insertIndex = plistEndIndex;
+            }
+        }       
         
         const insertionKeys = targetFonts.reduce((contents, { filePath }) => {
             const name = path.basename(filePath)
