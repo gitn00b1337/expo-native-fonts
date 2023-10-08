@@ -114,9 +114,7 @@ const addFontToXcodeProj = (config: ExportedConfigWithProps<XcodeProject>, optio
 
     console.log(`Target UUID: ${targetUuid}`)
 
-    const resourceBuildPhases = project.pbxResourcesBuildPhaseObj(targetUuid)
-
-
+    //const resourceBuildPhases = project.pbxResourcesBuildPhaseObj(targetUuid)
     // this causes multiple resource phases which can cause build issues
     // project.addBuildPhase(
     //     [...fontFiles],
@@ -127,12 +125,15 @@ const addFontToXcodeProj = (config: ExportedConfigWithProps<XcodeProject>, optio
     //     ''
     // )
     for (const file of fontFiles) {
+        console.log(`Adding resource file ${file}`)
         project.addResourceFile(file, {
             lastKnownFileType: 'file',
             sourceTree: '<group>',
             target: targetUuid,
         }, 'Resources')
     }
+
+    console.log('Resource files copied successfully.')
 
     return config
 }

@@ -1,6 +1,6 @@
 {
   "name": "@bittingz/expo-native-fonts",
-  "version": "0.1.11",
+  "version": "0.1.14",
   "description": "Adds fonts to native code in expo modules.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
