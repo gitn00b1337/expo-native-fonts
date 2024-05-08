@@ -5,7 +5,7 @@ This module is for adding custom fonts to native iOS extensions, for example if 
 ## Installation
 
 ```
-npx expo install @bittingz/expo-widgets
+npx expo install @bittingz/expo-native-fonts
 ```
 
 ## Setup
