@@ -93,7 +93,7 @@ const addFontToXcodeProj = (config: ExportedConfigWithProps<XcodeProject>, optio
     for (const filePath of fontFiles) {
         console.log(`Adding resource file ${filePath}`)
         IOSConfig.XcodeUtils.addResourceFileToGroup({
-            filepath: filePath,
+            filepath: path.join('Fonts', filePath),
             groupName: 'Resources',
             project,
             isBuildFile: true,
