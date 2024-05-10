@@ -1,4 +1,4 @@
-import { ConfigPlugin, ExportedConfigWithProps, XcodeProject, withXcodeProject } from "@expo/config-plugins"
+import { ConfigPlugin, ExportedConfigWithProps, XcodeProject, withXcodeProject, IOSConfig } from "@expo/config-plugins"
 import { ExpoNativeFontOptions, ExpoNativeFontsOptions } from ".."
 import * as path from "path"
 import fsExtra from "fs-extra"
@@ -75,36 +75,12 @@ const getPBXTargetByName = (project: XcodeProject, name: string) => {
 
 const addFontToXcodeProj = (config: ExportedConfigWithProps<XcodeProject>, options: ExpoNativeFontsOptions, targetName: string, fonts: ExpoNativeFontOptions[]) => {
     console.log(`Adding fonts to target ${targetName}`)
-    const {
-        projectRoot,
-    } = config.modRequest
-
     const project = config.modResults;
-    // const targetDirectory = path.join(projectRoot, targetName)
-    // console.log(`Target directory: ${targetDirectory}`)
 
     const fontFiles = fonts.map(font => font.filePath)
     console.log('Font files:')
     console.log(fontFiles)
 
-    const groupName = 'Fonts'
-    const groupPath = 'Fonts'
-
-    console.log(`Adding ${groupName} pbx group`)
-    const pbxGroup = project.addPbxGroup(
-        [...fontFiles],
-        groupName,
-        groupPath,
-        '"<group>"'
-    )
-
-    // add to main project group
-    const projectInfo = project.getFirstProject()
-    const mainGroup = projectInfo.firstProject.mainGroup
-    console.log(`Adding pbx group to main group ${mainGroup}`)
-    project.addToPbxGroup(pbxGroup.uuid, mainGroup)
-
-    // add file to the targets build phase
     console.log(`Searching for target ${targetName}`)
     const { target, uuid: targetUuid } = getPBXTargetByName(project, targetName)
 
@@ -114,27 +90,20 @@ const addFontToXcodeProj = (config: ExportedConfigWithProps<XcodeProject>, optio
 
     console.log(`Target UUID: ${targetUuid}`)
 
-    //const resourceBuildPhases = project.pbxResourcesBuildPhaseObj(targetUuid)
-    // this causes multiple resource phases which can cause build issues
-    // project.addBuildPhase(
-    //     [...fontFiles],
-    //     "PBXResourcesBuildPhase",
-    //     groupName,
-    //     targetUuid,
-    //     'app_extension',
-    //     ''
-    // )
-    for (const file of fontFiles) {
-        console.log(`Adding resource file ${file}`)
-        project.addResourceFile(file, {
-            lastKnownFileType: 'file',
-            sourceTree: '<group>',
-            target: targetUuid,
-        }, 'Resources')
+    for (const filePath of fontFiles) {
+        console.log(`Adding resource file ${filePath}`)
+        IOSConfig.XcodeUtils.addResourceFileToGroup({
+            filepath: filePath,
+            groupName: 'Resources',
+            project,
+            isBuildFile: true,
+            verbose: true,
+            targetUuid,
+        });
     }
 
     console.log('Resource files copied successfully.')
-
+    config.modResults = project
     return config
 }
 
@@ -236,8 +205,9 @@ const copyFontFiles = (config: ExportedConfigWithProps<XcodeProject>, { srcFolde
  */
 export const withExpoNativeFontsIOS: ConfigPlugin<ExpoNativeFontsOptions> = (config, options) => {
     return withXcodeProject(config, (config) => {
-        return injectExpoNativeFontsIOS(config, options)
-    }) 
+         injectExpoNativeFontsIOS(config, options)
+         return config;
+    })
 }
 
 /**
@@ -246,12 +216,10 @@ export const withExpoNativeFontsIOS: ConfigPlugin<ExpoNativeFontsOptions> = (con
  * @param options 
  * @returns 
  */
-export const injectExpoNativeFontsIOS = (config: ExportedConfigWithProps<XcodeProject>, options: ExpoNativeFontsOptions) => {
+export const injectExpoNativeFontsIOS = (config: ExportedConfigWithProps<XcodeProject>, options: ExpoNativeFontsOptions): XcodeProject => {
     const iosFonts = getIOSFonts(options)
     const grouped = groupByTarget(iosFonts)
 
     updateInfoPlist(config, options, grouped)
     updateXcodeProject(config, options, grouped)
-
-    return config
 }
